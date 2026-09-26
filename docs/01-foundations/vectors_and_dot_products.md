@@ -31,10 +31,10 @@ The raw dot product measures both **directional alignment** and **scale (magnitu
 
 While closely related, normalization and cosine similarity serve distinct purposes.
 
-| Concept | Type | Scope | Primary Equation |
-| :--- | :--- | :--- | :--- |
-| **Vector Normalization** | Action / Transformation | Single Vector ($\vec{v}$) | $\hat{v} = \frac{\vec{v}}{\|\vec{v}\|}$ |
-| **Cosine Similarity** | Metric / Calculation | Vector Pair ($\vec{A}, \vec{B}$) | $\text{Cosine Similarity} = \frac{\vec{A} \cdot \vec{B}}{\|\vec{A}\| \|\vec{B}\|}$ |
+| Concept                  | Type                    |              Scope               |                                  Primary Equation                                  |
+| :----------------------- | :---------------------- | :------------------------------: | :--------------------------------------------------------------------------------: |
+| **Vector Normalization** | Action / Transformation |    Single Vector ($\vec{v}$)     |                      $\hat{v} = \frac{\vec{v}}{\|\vec{v}\|}$                       |
+| **Cosine Similarity**    | Metric / Calculation    | Vector Pair ($\vec{A}, \vec{B}$) | $\text{Cosine Similarity} = \frac{\vec{A} \cdot \vec{B}}{\|\vec{A}\| \|\vec{B}\|}$ |
 
 ---
 
