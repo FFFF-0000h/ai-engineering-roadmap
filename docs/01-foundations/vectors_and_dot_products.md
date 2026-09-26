@@ -116,3 +116,44 @@ Legend:
 * **Vector Normalization**: Scales **one** vector to length $1.0$ ($\hat{v} = \frac{\vec{v}}{\|\vec{v}\|}$).
 * **Cosine Similarity**: Measures the angle between **two** vectors ($\frac{\vec{A} \cdot \vec{B}}{\|\vec{A}\| \|\vec{B}\|}$).
 * **Integration**: If vectors are pre-normalized, **Dot Product = Cosine Similarity**, dramatically accelerating vector similarity search.
+
+Why Matrix Operations Are Faster:
+Pure Python for loops are executed line-by-line by the Python interpreter. Python checks types dynamically, allocates memory step-by-step, and runs sequentially on a single CPU thread.
+
+Matrix libraries like NumPy and frameworks like PyTorch:
+    C/C++ & Fortran Underneath: NumPy bypasses Python's interpreter. It delegates calculations to highly optimized low-level libraries (like BLAS and LAPACK) written in C or Fortran.
+
+    SIMD (Single Instruction, Multiple Data): Modern CPUs have special hardware instructions that allow them to perform arithmetic (like addition or multiplication) on entire arrays of numbers in a single clock cycle, rather than looping item-by-item.
+
+    GPU Parallelism: While a CPU has a few powerful cores (e.g., 8 to 16 cores), a modern GPU (Graphics Processing Unit) has thousands of tiny cores. Because matrix multiplication consists of thousands of independent additions and multiplications, a GPU can compute all of them simultaneously in parallel.
+
+---
+### The Fundamental Difference between element-wise `*` and matrix multiplication `@`:
+
+#### 1. Element-Wise Multiplication (`*` or `np.multiply`)
+
+* **Rule:** Multiplies corresponding numbers at matching positions (index by index).
+* **Shape Constraint:** Both inputs must have identical shapes (or broadcastable shapes).
+* **Result:** Produces an output array of the **same shape** as the inputs.
+
+If $\mathbf{A} = [1, 2, 3]$ and $\mathbf{B} = [4, 5, 6]$:
+
+
+$$\mathbf{A} * \mathbf{B} = [1 \times 4, \quad 2 \times 5, \quad 3 \times 6] = [4, 10, 18]$$
+
+> *Note:* To turn element-wise multiplication into a single dot product, you multiply element-wise first and then **sum** the result: $\sum (4 + 10 + 18) = 32$.
+
+---
+
+#### 2. Matrix Multiplication (`@` or `np.matmul` / `np.dot`)
+
+* **Rule:** Takes **entire rows** from the left matrix and computes dot products against **entire columns** of the right matrix.
+* **Shape Constraint:** The inner dimensions must match. If Matrix $\mathbf{A}$ is $(M \times K)$, Matrix $\mathbf{B}$ must be $(K \times N)$.
+* **Result:** Produces a new matrix of shape $(M \times N)$.
+
+If Matrix $\mathbf{A}$ contains $M$ document embeddings ($(M \times D)$) and Matrix $\mathbf{B}^T$ is $(D \times N)$, computing $\mathbf{A} @ \mathbf{B}^T$ calculates **all pairwise dot products across every single combination in one pass**.
+
+$$\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix} @ \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 1 & 1 \end{bmatrix} = \begin{bmatrix} (1\cdot 1 + 2\cdot 0 + 3\cdot 1) & (1\cdot 0 + 2\cdot 1 + 3\cdot 1) \\ (4\cdot 1 + 5\cdot 0 + 6\cdot 1) & (4\cdot 0 + 5\cdot 1 + 6\cdot 1) \end{bmatrix} = \begin{bmatrix} 4 & 5 \\ 10 & 11 \end{bmatrix}$$
+
+---
+
